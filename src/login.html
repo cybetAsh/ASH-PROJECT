@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Login</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">My Site</div>
+      <div class="nav"><a href="/home.html">Home</a> <a href="/about.html">About</a></div>
+    </div>
+
+    <div class="login-box card">
+      <h2>Login</h2>
+      <p class="small-muted">Username: <strong>dineth</strong>  / Password: <strong>ofc</strong></p>
+      <form method="POST" action="/login">
+        <div style="margin-bottom:10px"><input name="username" placeholder="username" required></div>
+        <div style="margin-bottom:10px"><input name="password" placeholder="password" type="password" required></div>
+        <div><button type="submit">Sign in</button></div>
+      </form>
+      <div style="margin-top:12px;color:#fda4af">
+        <!-- show simple error -->
+        <script> if(location.search.includes('err')) document.write('Incorrect credentials') </script>
+      </div>
+    </div>
+
+    <div class="footer">Built with ❤️</div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Catalogue Create</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">Catalogue</div>
+      <div class="nav"><a href="/dashboard.html">Back</a> <a href="/logout">Logout</a></div>
+    </div>
+
+    <div class="card">
+      <h3>Upload photo</h3>
+      <p class="small-muted">Upload a photo. After upload, it will be sliced into 6 equal vertical parts.</p>
+      <form id="catForm">
+        <input type="file" name="photo" accept="image/*" required>
+        <div style="margin-top:10px"><button type="submit">Upload Photo</button></div>
+      </form>
+
+      <div id="catResult" style="margin-top:14px"></div>
+    </div>
+
+    <div class="footer">Tip: use tall/horizontal photos for best results</div>
+  </div>
+
+  <script>
+  // inlined helper
+  async function copyToClipboard(text){ navigator.clipboard?.writeText(text).then(()=>alert('Copied!')).catch(()=>prompt('Copy this:', text)); }
+
+  document.getElementById('catForm').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const form = e.target;
+    const fileIn = form.querySelector('input[type=file]');
+    if (!fileIn.files.length) { alert('Choose a file'); return; }
+    const fd = new FormData();
+    fd.append('photo', fileIn.files[0]);
+    const btn = form.querySelector('button');
+    btn.disabled = true; btn.textContent = 'Uploading...';
+    const resp = await fetch('/api/upload-and-slice',{ method:'POST', body:fd });
+    const j = await resp.json();
+    btn.disabled=false; btn.textContent='Create Catalogue';
+    const out = document.getElementById('catResult');
+    if (!j.success) { out.innerText='Upload failed'; return; }
+    out.innerHTML = `<p class="small-muted">Uploaded — preview below</p>
+      <img class="preview-img" src="${j.original}" alt="preview">
+      <div class="slice-grid"></div>`;
+    const grid = out.querySelector('.slice-grid');
+    j.slices.forEach((u,i)=>{
+      const d = document.createElement('div');
+      d.className='slice-item';
+      d.innerHTML = `<div>Part ${i+1}</div>
+        <img src="${u}" style="max-width:100%;margin:8px 0;border-radius:6px">
+        <a href="${u}" download="slice_${i+1}.png" class="copy-btn">Download</a>`;
+      grid.appendChild(d);
+    });
+  });
+  </script>
+</body>
+</html>

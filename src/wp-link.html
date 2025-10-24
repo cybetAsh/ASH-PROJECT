@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>WP Link Generator</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header"><div class="logo">WhatsApp Link</div><div class="nav"><a href="/dashboard.html">Back</a></div></div>
+
+    <div class="card">
+      <h3>Enter your number with country code</h3>
+      <p class="small-muted">Example: +947XXXXXXXX</p>
+      <input id="numInput" placeholder="+94..." >
+      <div style="margin-top:10px">
+        <button onclick="generate()">Generate Link</button>
+      </div>
+      <div id="linkOut" style="margin-top:12px"></div>
+    </div>
+
+    <div class="footer"></div>
+  </div>
+
+  <script>
+    function copyToClipboard(text){ navigator.clipboard?.writeText(text).then(()=>alert('Copied!')).catch(()=>prompt('Copy this:', text)); }
+
+    function generate(){
+      const input = document.getElementById('numInput');
+      const out = document.getElementById('linkOut');
+      const raw = input.value.trim();
+      if(!raw) return alert('Enter number');
+      const plain = raw.startsWith('+') ? raw.slice(1) : raw;
+      const link = `https://wa.me/${plain}`;
+      out.innerHTML = `<div><a href="${link}" target="_blank">${link}</a></div>
+        <div style="margin-top:8px"><button class="copy-btn" onclick="copyToClipboard('${link}')">Copy Link</button></div>`;
+    }
+  </script>
+</body>
+</html>

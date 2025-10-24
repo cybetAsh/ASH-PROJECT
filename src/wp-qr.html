@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>WP QR Generator</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header"><div class="logo">WhatsApp QR</div><div class="nav"><a href="/dashboard.html">Back</a></div></div>
+
+    <div class="card">
+      <h3>Enter your number with country code +94</h3>
+      <input id="numIn" placeholder="+947XXXXXXXX">
+      <div style="margin-top:10px">
+        <button onclick="genQr()">Generate QR Code</button>
+      </div>
+      <div id="qrOut" style="margin-top:12px"></div>
+    </div>
+
+    <div class="footer"></div>
+  </div>
+
+  <script>
+    async function genQr(){
+      const input = document.getElementById('numIn');
+      const out = document.getElementById('qrOut');
+      const raw = input.value.trim();
+      if (!raw) return alert('Enter number');
+      const plain = raw.startsWith('+') ? raw.slice(1) : raw;
+      const text = `https://wa.me/${plain}`;
+      out.innerHTML = 'Generating...';
+      const res = await fetch('/api/qrcode',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ text }) });
+      const j = await res.json();
+      if (!j.success) { out.innerText='Failed'; return; }
+      out.innerHTML = `<img src="${j.dataUrl}" alt="qr" style="max-width:240px;border-radius:8px">
+        <div style="margin-top:8px"><button class="copy-btn" onclick="navigator.clipboard.writeText('${text}')">Copy Link</button></div>`;
+    }
+  </script>
+</body>
+</html>
